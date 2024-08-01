@@ -21,6 +21,10 @@ class FoodItem extends Model
         'food_category_id', // Ensure this matches your database column
     ];
 
+    protected $hidden = [
+        'create_admin_id'
+    ];
+
     // Define relationship with FoodCategory
     public function foodCategory()
     {

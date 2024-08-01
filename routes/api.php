@@ -12,6 +12,7 @@ use App\Http\Middleware\EnsureClientAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookTableController;
+use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\WaiterController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -66,3 +67,4 @@ Route::prefix('client')->middleware(['auth:sanctum', EnsureClientAuth::class])->
 
 Route::post('/check-availability/table', [BookTableController::class, 'checkAvailability']);
 Route::get('/get/best-selling/product', [AdminDashboardController::class, 'getBestSellingProduct']);
+Route::get('/search', [ProductSearchController::class, 'searchProduct']);
