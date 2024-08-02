@@ -39,7 +39,7 @@ Route::prefix('admin')->middleware([EnsureAdminAuth::class])->group(function () 
     Route::post('/store/product', [ProductController::class, 'store']);
     Route::post('/store/waiters', [WaiterController::class, 'storeWaiter']);
     Route::get('/get/book-table', [BookTableController::class, 'getBookTables']);
-    Route::get('/get/orders', [BookTableController::class, 'getOrders']);
+    Route::get('/get/orders/{id?}', [BookTableController::class, 'getOrders']);
     Route::post('/assign-waiter', [BookTableController::class, 'assignWaiter']);
     Route::get('/dashboard/count/clients', [AdminDashboardController::class, 'getClientCount']);
     Route::get('/dashboard/count/orders', [AdminDashboardController::class, 'getOrderCount']);

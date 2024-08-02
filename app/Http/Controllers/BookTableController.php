@@ -129,16 +129,109 @@ class BookTableController extends Controller
         }
     }
 
-    public function getOrders(Request $request)
+    // public function getOrders(Request $request, $id = null)
+    // {
+    //     try {
+    //         if ($id) {
+    //             // Fetch the order with the specific ID
+    //             $order = Order::with('user')->with('status')->with('orderItems')->find($id);
+
+    //             if ($order) {
+    //                 return response()->json([
+    //                     'success' => true,
+    //                     'data' => $order
+    //                 ], 200);
+    //             } else {
+    //                 return response()->json([
+    //                     'success' => false,
+    //                     'message' => 'Order not found.'
+    //                 ], 404);
+    //             }
+    //         } else {
+    //             // Fetch all orders ordered by created_at in descending order
+    //             $orders = Order::with('user')->with('status')->orderBy('created_at', 'desc')->get();
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'data' => $orders
+    //             ], 200);
+    //         }
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'An error occurred while fetching orders.',
+    //             'error' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+    public function getOrders(Request $request, $id = null)
     {
         try {
-            // Fetch all book tables ordered by created_at in descending order
-            // $bookTables = BookTable::orderBy('created_at', 'desc')->get();
-            $orders = Order::with('user')->with('status')->orderBy('created_at', 'desc')->get();
-            return response()->json([
-                'success' => true,
-                'data' => $orders
-            ], 200);
+            if ($id) {
+                // Fetch the order with the specific ID, including related OrderItems and FoodItems
+                $order = Order::with('user')
+                    ->with('status')
+                    ->with(['orderItems.foodItem']) // Eager load FoodItems through OrderItems
+                    ->find($id);
+
+                if ($order) {
+                    foreach ($order->orderItems as $orderItem) {
+                        $foodItem = $orderItem->foodItem;
+                        $foodItem->food_images = json_decode($foodItem->food_images, true);
+                    }
+
+                    return response()->json([
+                        'success' => true,
+                        'data' => $order
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Order not found.'
+                    ], 404);
+                }
+            } else {
+                // Fetch all orders with related OrderItems and FoodItems
+                // $orders = Order::with('user')
+                //     ->with('status')
+                //     ->with(['orderItems.foodItem']) // Eager load FoodItems through OrderItems
+                //     ->orderBy('created_at', 'desc')
+                //     ->get();
+
+                // foreach ($orders as $order) {
+                //     foreach ($order->orderItems as $orderItem) {
+                //         $foodItem = $orderItem->foodItem;
+                //         $foodItem->food_images = json_decode($foodItem->food_images, true);
+                //     }
+                // }
+
+                // return response()->json([
+                //     'success' => true,
+                //     'data' => $orders
+                // ], 200);
+                $orders = Order::with('user')
+                    ->with('status')
+                    ->with(['orderItems.foodItem']) // Eager load FoodItems through OrderItems
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+                foreach ($orders as $order) {
+                    foreach ($order->orderItems as $orderItem) {
+                        $foodItem = $orderItem->foodItem;
+
+                        // Check if food_images is a string before decoding
+                        if (is_string($foodItem->food_images)) {
+                            $foodItem->food_images = json_decode($foodItem->food_images, true);
+                        }
+                        // If food_images is already an array, no need to decode
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $orders
+                ], 200);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -147,6 +240,8 @@ class BookTableController extends Controller
             ], 500);
         }
     }
+
+
 
 
     // public function checkAvailability(Request $request)

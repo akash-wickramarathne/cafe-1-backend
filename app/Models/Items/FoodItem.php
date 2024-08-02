@@ -31,4 +31,9 @@ class FoodItem extends Model
         // Ensure the foreign key and local key are correctly specified
         return $this->belongsTo(FoodCategory::class, 'food_category_id', 'food_category_id');
     }
+
+    public function orderItems()
+    {
+        return $this->hasMany(FoodItem::class, 'food_item_id');
+    }
 }
