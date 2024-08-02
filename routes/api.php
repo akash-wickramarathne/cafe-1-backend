@@ -48,10 +48,12 @@ Route::prefix('admin')->middleware([EnsureAdminAuth::class])->group(function () 
     Route::get('/dashboard/count/tables', [AdminDashboardController::class, 'getTableCount']);
     Route::get('/dashboard/count/foodCategories', [AdminDashboardController::class, 'getFoodCategoryCount']);
     Route::get('/dashboard/amount/orders', [AdminDashboardController::class, 'getOrdersPayAmount']);
+    Route::get('/dashboard/amount/tables', [AdminDashboardController::class, 'getTableBooksPayAmount']);
+    Route::put('/product/edit/{id}', [ProductController::class, 'update']);
 });
 
 Route::get('/get/products', [ProductController::class, 'index']);
-
+Route::put('/product/edit/{id}', [ProductController::class, 'update']);
 
 
 //Only client apis

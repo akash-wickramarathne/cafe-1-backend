@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Items\FoodItem;
 use Illuminate\Http\Request;
 
@@ -274,6 +275,43 @@ class ProductController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create food item.',
+                'error' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function update(ProductUpdateRequest $request, $id): JsonResponse
+    {
+        DB::beginTransaction();
+
+        try {
+            // Retrieve validated data from the request
+            $data = $request->validated();
+
+            // Find the food item by ID
+            $foodItem = FoodItem::findOrFail($id);
+
+            // Update food item details
+            $foodItem->update([
+                'food_name' => $data['name'],
+                'description' => $data['description'],
+                'price' => $data['price'],
+                'food_images' => json_encode($data['imagePaths']), // Convert array to JSON string
+                'food_category_id' => $data['category'], // Ensure this matches your database column
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'data' => $foodItem,
+                'message' => 'Food item updated successfully!',
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update food item.',
                 'error' => $th->getMessage(),
             ], 500);
         }
