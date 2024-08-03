@@ -71,7 +71,7 @@ class WaiterController extends Controller
             // Transform the data to rename keys
             $data = $waiters->map(function ($waiter) {
                 return [
-                    'id' => $waiter->waiter_id,
+                    'waiter_id' => $waiter->waiter_id,
                     'name' => $waiter->name,
                     'email' => $waiter->email
                 ];

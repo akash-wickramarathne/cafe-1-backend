@@ -2,6 +2,7 @@
 
 namespace App\Models\Auth;
 
+use App\Models\BookTable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +10,7 @@ class Waiter extends Model
 {
     use HasFactory;
 
-    protected $primarykey = "waiter_id";
+    protected $primaryKey = "waiter_id";
     protected $fillable = [
         'name',
         'email',
@@ -19,4 +20,10 @@ class Waiter extends Model
     ];
 
     public $timestamps = false;
+
+    public function bookTables()
+    {
+
+        return $this->hasMany(BookTable::class, 'waiter_id');
+    }
 }

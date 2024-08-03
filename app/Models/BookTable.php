@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Auth\Waiter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,5 +29,9 @@ class BookTable extends Model
     public function status()
     {
         return $this->belongsTo(OrderStatus::class, 'table_status_id');
+    }
+
+    public function waiter(){
+        return $this->belongsTo(Waiter::class,'waiter_id');
     }
 }
