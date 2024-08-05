@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookTableController;
 use App\Http\Controllers\ProductSearchController;
+use App\Http\Controllers\TableController;
+use App\Http\Controllers\TableImageController;
 use App\Http\Controllers\WaiterController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -36,6 +38,7 @@ Route::middleware(['auth:sanctum', EnsureAdminAuth::class])->prefix('/admin')->g
 Route::prefix('admin')->middleware([EnsureAdminAuth::class])->group(function () {
     Route::post('/store/foodCategory', [FoodCategoryController::class, 'store']);
     Route::post('/store/product/image', [ProductImageController::class, 'store']);
+    Route::post('/store/table/image', [TableImageController::class, 'store']);
     Route::post('/store/product', [ProductController::class, 'store']);
     Route::post('/store/waiters', [WaiterController::class, 'storeWaiter']);
     Route::get('/get/book-tables/{id?}', [BookTableController::class, 'getBookTables']);
@@ -50,10 +53,14 @@ Route::prefix('admin')->middleware([EnsureAdminAuth::class])->group(function () 
     Route::get('/dashboard/amount/orders', [AdminDashboardController::class, 'getOrdersPayAmount']);
     Route::get('/dashboard/amount/tables', [AdminDashboardController::class, 'getTableBooksPayAmount']);
     Route::put('/product/edit/{id}', [ProductController::class, 'update']);
+    Route::post('/store/table', [TableController::class, 'storeTable']);
 });
 
 Route::get('/get/products', [ProductController::class, 'index']);
 Route::put('/product/edit/{id}', [ProductController::class, 'update']);
+Route::get('/get/table/sizes', [TableController::class, 'getTableSizes']);
+Route::get('/get/table/statuses', [TableController::class, 'getTableStatuses']);
+
 
 
 //Only client apis
